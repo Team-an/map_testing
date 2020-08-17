@@ -24,8 +24,12 @@ class MyDrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private lateinit var drawCanvas: Canvas
     //canvas bitmap
     private lateinit var canvasBitmap: Bitmap
+    private lateinit var originalBitmap : Bitmap
 
     var test: String = "pattern1"
+
+    private var onTouchHandler = false
+
 
     init {
         setupDrawing()
@@ -33,7 +37,7 @@ class MyDrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
 
     private fun setupDrawing() {
-        drawPaint.isAntiAlias = true
+        drawPaint.isAntiAlias = false
         drawPaint.strokeWidth = 0f
         drawPaint.style = Paint.Style.FILL_AND_STROKE
         drawPaint.strokeJoin = Paint.Join.ROUND
@@ -72,17 +76,17 @@ class MyDrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
                 MotionEvent.ACTION_UP -> {
                     paths[pathNum].lineTo(touchX, touchY)
-                    drawCanvas.drawPath(paths[pathNum], drawPaint)
                     paths[pathNum].close()
-//                    paths[pathNum].reset()
+
+                    drawCanvas.drawPath(paths[pathNum], drawPaint)
                     pathNum++
                 }
                 else ->
-                    return false
+                    return onTouchHandler
             }
 
             invalidate()
-            return true
+            return onTouchHandler
         } else {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -93,6 +97,8 @@ class MyDrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
                         if (pBounds.contains(touchX, touchY)) {
                             //select path
                             Log.e("ERRRR", "hihi2222 $touchX $touchY")
+                            paths.remove(p)
+                            pathNum--
                             drawCanvas.drawPath(p, drawPaint)
 
                             break;
@@ -100,10 +106,10 @@ class MyDrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
                     }
                     invalidate()
                 }
-                else -> return false
+                else -> return onTouchHandler
             }
         }
-        return true
+        return onTouchHandler
     }
 
     fun setPattern(newPattern: String) {
@@ -116,5 +122,8 @@ class MyDrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         drawPaint.shader = patternBMPshader
     }
 
+    fun setTouchBool(b: Boolean) {
+        this.onTouchHandler = !b
+    }
 
 }

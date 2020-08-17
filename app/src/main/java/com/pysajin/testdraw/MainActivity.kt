@@ -1,49 +1,36 @@
 package com.pysajin.testdraw
 
-import android.graphics.BitmapFactory
-import android.graphics.BitmapShader
-import android.graphics.Shader
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.scale_activity.*
 
 class MainActivity :AppCompatActivity() {
-//    private lateinit var drawView: MyDrawView
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
-//        drawView = drawing
-//
-//    }
-//
-//    fun paintClicked(view: View){
-//        //set pattern
-//        val pattern = view.tag.toString()
-//        Log.e("ERRR","hehe $pattern")
-//        drawView.setPattern(pattern)
-//    }
-
-
-    private lateinit var drawView: MapView
+    private lateinit var drawView: MyDrawView
+    private lateinit var mapViews: MapView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.scale_activity)
-        drawView = mapView1
-
+        setContentView(R.layout.activity_main)
+        drawView = drawing
+        mapViews = mapView
     }
-//
-//    fun paintClicked(view: View){
-//        //set pattern
-//        val pattern = view.tag.toString()
-//        Log.e("ERRR","hehe $pattern")
-//        drawView.setPattern(pattern)
-//    }
 
+    fun paintClicked(view: View){
+        //set pattern
+        val pattern = view.tag.toString()
 
-
+        if(pattern == "erase"){
+            drawView.setTouchBool(true)
+            mapViews.setTouchBool(false)
+        }
+        else{
+            drawView.setTouchBool(false)
+            mapViews.setTouchBool(true)
+        }
+        Log.e("ERRR","hehe $pattern")
+        drawView.setPattern(pattern)
+    }
 }

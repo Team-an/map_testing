@@ -14,8 +14,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 
-class MapView(context: Context, attrs: AttributeSet?, defStyle: Int) : View(context, attrs, defStyle) {
 
+
+class MapView @JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0): View (context, attrs, defStyle){
 
     private var mImage: Drawable? = null
     private var mPosX: Float = 0.toFloat()
@@ -28,41 +30,17 @@ class MapView(context: Context, attrs: AttributeSet?, defStyle: Int) : View(cont
     private val mScaleDetector: ScaleGestureDetector
     private var mScaleFactor = 1f
 
-    constructor(context: Context) : this(context, null, 0) {
-
-        Glide.with(context).asBitmap().load(R.drawable.map).into(object : CustomTarget<Bitmap>() {
-            override fun onLoadCleared(placeholder: Drawable?) {
-            }
-
-            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                mImage = BitmapDrawable(resources, resource)
-                mImage!!.setBounds(0, 0, mImage!!.intrinsicWidth, mImage!!.intrinsicHeight)
-            }
-        })
-//        mImage = resources.getDrawable(R.drawable.pattern8)
-//        mImage!!.setBounds(0, 0, mImage!!.intrinsicWidth, mImage!!.intrinsicHeight)
-    }
-
-    // called when XML tries to inflate this View
-    constructor(context: Context, attrs: AttributeSet) : this(context, attrs, 0) {
-
-        Glide.with(context).asBitmap().load(R.drawable.map).into(object : CustomTarget<Bitmap>() {
-            override fun onLoadCleared(placeholder: Drawable?) {
-            }
-
-            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                mImage = BitmapDrawable(resources, resource)
-                mImage!!.setBounds(0, 0, mImage!!.intrinsicWidth, mImage!!.intrinsicHeight)
-            }
-        })
-
-
-
-//        mImage = resources.getDrawable(R.drawable.map)
-//        mImage!!.setBounds(0, 0, mImage!!.intrinsicWidth, mImage!!.intrinsicHeight)
-    }
+    private var onTouchHandler = false
 
     init {
+        Glide.with(context).asBitmap().load(R.drawable.map).into(object : CustomTarget<Bitmap>() {
+            override fun onLoadCleared(placeholder: Drawable?) {}
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                mImage = BitmapDrawable(resources, resource)
+                mImage!!.setBounds(0, 0, mImage!!.intrinsicWidth, mImage!!.intrinsicHeight)
+            }
+        })
+
         mScaleDetector = ScaleGestureDetector(context, ScaleListener())
     }
 
@@ -124,12 +102,11 @@ class MapView(context: Context, attrs: AttributeSet?, defStyle: Int) : View(cont
             }
         }
 
-        return true
+        return onTouchHandler
     }
 
     public override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-
         if(mImage == null) return
 
         canvas.save()
@@ -153,8 +130,11 @@ class MapView(context: Context, attrs: AttributeSet?, defStyle: Int) : View(cont
     }
 
     companion object {
-
         private val INVALID_POINTER_ID = -1
+    }
+
+    fun setTouchBool(b: Boolean) {
+        this.onTouchHandler = !b
     }
 
 }
